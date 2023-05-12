@@ -8,7 +8,7 @@ soong_config_module_type {
 
 soong_config_string_variable {
     name: "ufsframework",
-    values: ["sg", "bsg", "non_ufs"],
+    values: ["bsg"],
 }
 
 ufsbsg_cc_defaults {
@@ -18,10 +18,6 @@ ufsbsg_cc_defaults {
             bsg : {
                cflags : ["-D_BSG_FRAMEWORK_KERNEL_HEADERS"],
             },
-//support compilation for non-ufs config
-           non_ufs : {
-              cflags : ["-D_GENERIC_KERNEL_HEADERS"],
-           },
         },
      },
 }
@@ -30,11 +26,9 @@ cc_library {
     name: "librecovery_updater",
     vendor: true,
     recovery_available: true,
-    defaults: ["libion_header_paths" ,"ufsbsg_defaults"],
+    defaults: ["ufsbsg_defaults"],
     srcs: [
         "gpt-utils.cpp",
-        "dec.cpp",
-        "oem-updater.cpp",
         "recovery-ufs-bsg.cpp",
     ],
     static_libs: [
@@ -51,6 +45,7 @@ cc_library {
     cflags: [
         "-Wall",
         "-Wno-unused-parameter",
+        "-D_GENERIC_KERNEL_HEADERS",
     ],
     sanitize: {
         cfi: false,
@@ -58,7 +53,6 @@ cc_library {
     owner: "qti",
     export_include_dirs: ["."],
     header_libs: [
-            "qti_kernel_headers",
             "device_kernel_headers",
     ],
 }
